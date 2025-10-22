@@ -4,7 +4,7 @@ using namespace std;
 
 //Bug when going down or right
 
-static const bool DEBUG = false;
+static bool DEBUG = false;
 
 class Game_2048
 {
@@ -51,28 +51,32 @@ class Game_2048
         cout << "Game 2048\n";
         cout << "Made by Terrakllee\n";
 
-        PrintGrid();
         SpawnStartingTiles();
         PrintGrid();
 
         do
         {
-            UserTurn();
+            do
+            {
+                UserTurn();
+            } while (badMove);
             CheckIfYouWin();
             if (youWin == true)
             {
+                PrintGrid();
                 cout << "\nYou Win!\n";
                 break;
             }
             CheckIfGameOver();
-            PrintGrid();
             if (gameOver == true)
             {
+                PrintGrid();
                 cout << "\nGame Over!\n";
                 break;
             }
             ClearMovementInfo();
-            SpawnRandomTile();
+            if (!disableRandomTiles)
+                SpawnRandomTile();
             PrintGrid();
 
         } while (!gameOver);
@@ -91,9 +95,9 @@ class Game_2048
                 }
                 else
                 {
-                    cout << "(" << i << ";" << j << ") " << Grid[i][j].GetValue(); //Debug
-                    cout << " m" << Grid[i][j].GetIsMoved() << " u" << Grid[i][j].GetIsStuckU(); //Debug
-                    cout << " d" << Grid[i][j].GetIsStuckD() << " l" << Grid[i][j].GetIsStuckL() << " r" << Grid[i][j].GetIsStuckR() << "\t\t\t"; //Debug
+                    cout << "[" << i << ";" << j << "] " << Grid[i][j].GetValue(); //Debug
+                    cout << " m" << Grid[i][j].GetIsMoved() << " l" << Grid[i][j].GetIsStuckL(); //Debug
+                    cout << "u" << Grid[i][j].GetIsStuckU() << "d" << Grid[i][j].GetIsStuckD() << "r" << Grid[i][j].GetIsStuckR() << "\t\t"; //Debug
                 }
             }
             cout << "\n";
@@ -340,6 +344,53 @@ class Game_2048
         Grid[3][0].SetValue(2);
     }
 
+    //Random
+    void DebugCaseRandom1()
+    {
+        Grid[0][0].SetValue(2);
+        Grid[0][1].SetValue(2);
+        Grid[0][2].SetValue(2);
+        Grid[0][3].SetValue(0);
+
+        Grid[1][0].SetValue(2);
+        Grid[1][1].SetValue(0);
+        Grid[1][2].SetValue(0);
+        Grid[1][3].SetValue(0);
+
+        Grid[2][0].SetValue(16);
+        Grid[2][1].SetValue(0);
+        Grid[2][2].SetValue(0);
+        Grid[2][3].SetValue(0);
+
+        Grid[3][0].SetValue(4);
+        Grid[3][1].SetValue(0);
+        Grid[3][2].SetValue(2);
+        Grid[3][3].SetValue(0);
+    }
+
+    void DebugCaseRandom2()
+    {
+        Grid[0][0].SetValue(2);
+        Grid[0][1].SetValue(2);
+        Grid[0][2].SetValue(0);
+        Grid[0][3].SetValue(0);
+
+        Grid[1][0].SetValue(4);
+        Grid[1][1].SetValue(32);
+        Grid[1][2].SetValue(2);
+        Grid[1][3].SetValue(0);
+
+        Grid[2][0].SetValue(4);
+        Grid[2][1].SetValue(16);
+        Grid[2][2].SetValue(8);
+        Grid[2][3].SetValue(0);
+
+        Grid[3][0].SetValue(4);
+        Grid[3][1].SetValue(8);
+        Grid[3][2].SetValue(2);
+        Grid[3][3].SetValue(4);
+    }
+
     void LoadDebugCases()
     {
         int loadCase;
@@ -356,6 +407,8 @@ class Game_2048
         cout << "Up2 - 9\t";
         cout << "Down2 - 10\t";
         cout << "Down2 - 11\t";
+        cout << "Random1 - 12\n";
+        cout << "Random2 - 13\t";
         cout << "\nEnter: ";
         cin >> loadCase;
 
@@ -397,6 +450,12 @@ class Game_2048
         case 11:
             DebugCaseDown2();
             break;
+        case 12:
+            DebugCaseRandom1();
+            break;
+        case 13:
+            DebugCaseRandom2(); // a w
+            break;
         default:
             break;
         }
@@ -415,6 +474,7 @@ class Game_2048
             cout << "Set values in first row - 'f'\n";
             cout << "Set all tile values - 'a'\n";
             cout << "Load debug cases - 'g'\n";
+            cout << "Disable tile spawn - 'n'\n";
             cout << "Print grid - 'p'\n";
             cout << "Clear grid - 'c'\n";
             cout << "Enter: ";
@@ -437,6 +497,9 @@ class Game_2048
             case 'g':
                 LoadDebugCases();
                 break;
+            case 'n':
+                disableRandomTiles == false ? disableRandomTiles = true : disableRandomTiles = false;
+                break;
             case 'p':
                 PrintGrid();
                 break;
@@ -444,6 +507,7 @@ class Game_2048
                 ClearGrid();
                 break;
             default:
+                cout << "No such option!\n";
                 break;
             }
         } while (!debugExit);
@@ -562,16 +626,17 @@ class Game_2048
                 CheckIfAllUpIsStuck();
                 if (!IsUpEdge(i) && !TileIsEmpty(i, j))
                 {
-                    if (Grid[i-1][j].GetValue() == Grid[i][j].GetValue() && Grid[i][j].GetIsMoved() == false)
+                    if (Grid[i-1][j].GetValue() == Grid[i][j].GetValue() && Grid[i-1][j].GetIsMoved() == false)
                     {
-                        Grid[i-1][j].SetValue(Grid[i-1][j].GetValue() * mult);
+                        Grid[i-1][j].SetValue(Grid[i-1][j].GetValue() * MULT);
                         Grid[i-1][j].SetIsMoved(true);
                         if (IsUpEdge(i-1))
                         {
                             Grid[i-1][j].SetIsStuckU(true);
                         }
                         ClearTile(i, j);
-                        PrintGrid(); //Debug
+                        if (DEBUG)
+                            PrintGrid(); //Debug
                     }
                     else if (!IsUpEdge(i) && TileIsEmpty(i-1, j))
                     {
@@ -581,7 +646,8 @@ class Game_2048
                             Grid[i-1][j].SetIsStuckU(true);
                         }
                         ClearTile(i, j);
-                        PrintGrid(); //Debug
+                        if (DEBUG)
+                            PrintGrid(); //Debug
                     }
                     else
                     {
@@ -598,7 +664,7 @@ class Game_2048
 
     void MoveDownStep()
     {
-        for (short i = 0; i < rows; i++)
+        for (short i = rows-1; i >= 0; i--)
         {
             for (short j = 0; j < cols; j++)
             {
@@ -606,16 +672,17 @@ class Game_2048
                 CheckIfAllDownIsStuck();
                 if (!IsDownEdge(i) && !TileIsEmpty(i, j))
                 {
-                    if (Grid[i+1][j].GetValue() == Grid[i][j].GetValue() && Grid[i][j].GetIsMoved() == false)
+                    if (Grid[i+1][j].GetValue() == Grid[i][j].GetValue() && Grid[i+1][j].GetIsMoved() == false)
                     {
-                        Grid[i+1][j].SetValue(Grid[i+1][j].GetValue() * mult);
+                        Grid[i+1][j].SetValue(Grid[i+1][j].GetValue() * MULT);
                         Grid[i+1][j].SetIsMoved(true);
                         if (IsDownEdge(i+1))
                         {
                             Grid[i+1][j].SetIsStuckD(true);
                         }
                         ClearTile(i, j);
-                        PrintGrid(); //Debug
+                        if (DEBUG)
+                            PrintGrid(); //Debug
                     }
                     else if (!IsDownEdge(i) && TileIsEmpty(i+1, j))
                     {
@@ -625,7 +692,8 @@ class Game_2048
                             Grid[i+1][j].SetIsStuckD(true);
                         }
                         ClearTile(i, j);
-                        PrintGrid(); //Debug
+                        if (DEBUG)
+                            PrintGrid(); //Debug
                     }
                     else
                     {
@@ -650,18 +718,20 @@ class Game_2048
                 CheckIfAllLeftIsStuck();
                 if (!IsLeftEdge(j) && !TileIsEmpty(i, j))
                 {
-                    if (Grid[i][j-1].GetValue() == Grid[i][j].GetValue() && Grid[i][j].GetIsMoved() == false)
+                    if (Grid[i][j-1].GetValue() == Grid[i][j].GetValue() && Grid[i][j-1].GetIsMoved() == false)
                     {
-                        Grid[i][j-1].SetValue(Grid[i][j-1].GetValue() * mult);
+                        Grid[i][j-1].SetValue(Grid[i][j-1].GetValue() * MULT);
                         Grid[i][j-1].SetIsMoved(true);
                         ClearTile(i, j);
-                        PrintGrid(); //Debug
+                        if (DEBUG)
+                            PrintGrid(); //Debug
                     }
                     else if (!IsLeftEdge(j) && TileIsEmpty(i, j-1))
                     {
                         Grid[i][j-1].SetValue(Grid[i][j].GetValue());
                         ClearTile(i, j);
-                        PrintGrid(); //Debug
+                        if (DEBUG)
+                            PrintGrid(); //Debug
                     }
                     else
                     {
@@ -680,24 +750,26 @@ class Game_2048
     {
         for (short i = 0; i < rows; i++)
         {
-            for (short j = 0; j < cols; j++)
+            for (short j = cols-1; j >= 0; j--)
             {
                 CountTiles();
                 CheckIfAllRightIsStuck();
                 if (!IsRightEdge(j) && !TileIsEmpty(i, j))
                 {
-                    if (Grid[i][j+1].GetValue() == Grid[i][j].GetValue() && Grid[i][j].GetIsMoved() == false)
+                    if (Grid[i][j+1].GetValue() == Grid[i][j].GetValue() && Grid[i][j+1].GetIsMoved() == false)
                     {
-                        Grid[i][j+1].SetValue(Grid[i][j+1].GetValue() * mult);
+                        Grid[i][j+1].SetValue(Grid[i][j+1].GetValue() * MULT);
                         Grid[i][j+1].SetIsMoved(true);
                         ClearTile(i, j);
-                        PrintGrid(); //Debug
+                        if (DEBUG)
+                            PrintGrid(); //Debug
                     }
                     else if (!IsRightEdge(j) && TileIsEmpty(i, j+1))
                     {
                         Grid[i][j+1].SetValue(Grid[i][j].GetValue());
                         ClearTile(i, j);
-                        PrintGrid(); //Debug
+                        if (DEBUG)
+                            PrintGrid(); //Debug
                     }
                     else
                     {
@@ -746,6 +818,7 @@ class Game_2048
 
     void UserTurn()
     {
+        CountTiles();
         char user;
         cout << "\nEnter the direction\n";
         cout << "Enter: ";
@@ -754,30 +827,90 @@ class Game_2048
         switch (user)
         {
         case 'w':
-            MoveUp();
+            CountTiles();
+            CheckIfAllUpIsStuck();
+            if (tilesStuckUpCount == tilesCount && tilesCount > 0)
+            {
+                badMove = true;
+            }
+            else
+            {
+                MoveUp();
+                badMove = false;
+            }
             break;
         case 'a':
-            MoveLeft();
+            CountTiles();
+            CheckIfAllLeftIsStuck();
+            if (tilesStuckLeftCount == tilesCount && tilesCount > 0)
+            {
+                badMove = true;
+            }
+            else
+            {
+                MoveLeft();
+                badMove = false;
+            }
             break;
         case 's':
-            MoveDown();
+            CountTiles();
+            CheckIfAllDownIsStuck();
+            if (tilesStuckDownCount == tilesCount && tilesCount > 0)
+            {
+                badMove = true;
+            }
+            else
+            {
+                MoveDown();
+                badMove = false;
+            }
             break;
         case 'd':
-            MoveRight();
+            CountTiles();
+            CheckIfAllRightIsStuck();
+            if (tilesStuckRightCount == tilesCount && tilesCount > 0)
+            {
+                badMove = true;
+            }
+            else
+            {
+                MoveRight();
+                badMove = false;
+            }
             break;
         case '~':
             ClearGrid();
+            badMove = true;
             break;
         case '@':
-            DebugMenu();
+            if (DEBUG)
+                DebugMenu();
+            badMove = true;
             break;
         case '#':
-            LoadDebugCases();
+            if (DEBUG)
+                LoadDebugCases();
+            badMove = true;
+            break;
+        case '%':
+            if (!DEBUG)
+            {
+                DEBUG = true;
+                cout << "Debug mode enabled!\n";
+            }
+            else
+            {
+                DEBUG = false;
+                cout << "Debug mode disabled!\n";
+            }
+            badMove = true;
             break;
         case '0':
             gameOver = true;
             break;
         default:
+            cout << "No such move! (use wasd)\n";
+            badMove = true;
             break;
         }
     }
@@ -789,13 +922,16 @@ class Game_2048
         {
             for (short j = 0; j < cols; j++)
             {
-                if (Grid[i][j].GetIsStuckU())
+                if (Grid[i][j].GetValue() != 0 && (IsUpEdge(i) || !TileIsEmpty(i-1, j) && Grid[i-1][j].GetValue() != Grid[i][j].GetValue() || Grid[i-1][j].GetIsMoved()))
                 {
+                    Grid[i][j].SetIsStuckU(true);
                     tilesStuckUpCount++;
                 }
-                
+                else
+                {
+                    Grid[i][j].SetIsStuckU(false);
+                }
             }
-            
         }
     }
 
@@ -806,13 +942,16 @@ class Game_2048
         {
             for (short j = 0; j < cols; j++)
             {
-                if (Grid[i][j].GetIsStuckD())
+                if (Grid[i][j].GetValue() != 0 && (IsDownEdge(i) || !TileIsEmpty(i+1, j) && Grid[i+1][j].GetValue() != Grid[i][j].GetValue() || Grid[i+1][j].GetIsMoved()))
                 {
+                    Grid[i][j].SetIsStuckD(true);
                     tilesStuckDownCount++;
                 }
-                
+                else
+                {
+                    Grid[i][j].SetIsStuckD(false);
+                }
             }
-            
         }
     }
 
@@ -823,13 +962,16 @@ class Game_2048
         {
             for (short j = 0; j < cols; j++)
             {
-                if (Grid[i][j].GetIsStuckL())
+                if (Grid[i][j].GetValue() != 0 && (IsLeftEdge(j) || !TileIsEmpty(i, j-1) && Grid[i][j-1].GetValue() != Grid[i][j].GetValue() || Grid[i][j-1].GetIsMoved()))
                 {
+                    Grid[i][j].SetIsStuckL(true);
                     tilesStuckLeftCount++;
                 }
-                
+                else
+                {
+                    Grid[i][j].SetIsStuckL(false);
+                }
             }
-            
         }
     }
 
@@ -840,13 +982,16 @@ class Game_2048
         {
             for (short j = 0; j < cols; j++)
             {
-                if (Grid[i][j].GetIsStuckR())
+                if (Grid[i][j].GetValue() != 0 && (IsRightEdge(j) || !TileIsEmpty(i, j+1) && Grid[i][j+1].GetValue() != Grid[i][j].GetValue() || Grid[i][j+1].GetIsMoved()))
                 {
+                    Grid[i][j].SetIsStuckR(true);
                     tilesStuckRightCount++;
                 }
-                
+                else
+                {
+                    Grid[i][j].SetIsStuckR(false);
+                }
             }
-            
         }
     }
 
@@ -861,9 +1006,7 @@ class Game_2048
                 {
                     tilesCount++;
                 }
-                
             }
-            
         }  
     }
 
@@ -893,7 +1036,7 @@ class Game_2048
         {
             for (short j = 0; j < cols; j++)
             {
-                if (Grid[i][j].GetValue() == wininigTile)
+                if (Grid[i][j].GetValue() == WINING_TILE)
                 {
                     youWin = true;
                 }
@@ -925,10 +1068,11 @@ class Game_2048
 
 
     private:
+    Tile **Grid;
+    double score = 0;
     static const short rows = 4;
     static const short cols = 4;
     static const short allTilesCount = 16;
-    Tile **Grid;
     static const short randomChanceOfSpawn_4 = 10;
     static const short value2 = 2;
     static const short value4 = 4;
@@ -939,8 +1083,10 @@ class Game_2048
     short tilesStuckRightCount;
     bool gameOver = false;
     bool youWin = false;
-    static const short mult = 2;
-    static const short wininigTile = 2048;
+    bool badMove = false;
+    bool disableRandomTiles = false;
+    static const short MULT = 2;
+    static const short WINING_TILE = 2048;
 
 
 };
