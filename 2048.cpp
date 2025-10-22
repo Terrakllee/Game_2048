@@ -236,6 +236,94 @@ class Game_2048
         }
     }
 
+    void DebugCase1()
+    {
+        Grid[0][0].SetValue(128);
+        Grid[0][1].SetValue(16);
+        Grid[0][2].SetValue(32);
+        Grid[0][3].SetValue(64);
+
+        Grid[1][0].SetValue(64);
+        Grid[1][1].SetValue(32);
+        Grid[1][2].SetValue(16);
+        Grid[1][3].SetValue(128);
+
+        Grid[2][0].SetValue(128);
+        Grid[2][1].SetValue(16);
+        Grid[2][2].SetValue(32);
+        Grid[2][3].SetValue(64);
+    }
+
+    void DebugCase2()
+    {
+        Grid[0][0].SetValue(1024);
+        Grid[0][1].SetValue(512);
+        Grid[0][2].SetValue(256);
+        Grid[0][3].SetValue(128);
+
+        Grid[1][0].SetValue(8);
+        Grid[1][1].SetValue(16);
+        Grid[1][2].SetValue(32);
+        Grid[1][3].SetValue(64);
+
+        Grid[2][0].SetValue(4);
+        Grid[2][1].SetValue(2);
+        Grid[2][2].SetValue(0);
+        Grid[2][3].SetValue(0);
+    }
+
+    void SetDebugCase()
+    {
+        cout << "Debug Case Creator\n";
+        int debugValues;
+        int debugIndex;
+        int dI, dJ;
+        cout << "Enter indexes to edit tile\n";
+        cout << "Enter: ";
+
+        do
+        {
+            cin >> debugIndex;
+            dI = (debugIndex / 10);
+            dJ = (debugIndex % 10);
+        } while (dI > rows && dJ > cols && dI < 0 && dJ < 0);
+
+        cout << "Enter Value: ";
+        do
+        {
+            cin >> debugValues;
+        } while (debugValues >= 0 && debugValues % 2 != 0);
+
+        Grid[dI][dJ].SetValue(debugValues);
+
+        cout << "Value " << debugValues << " at [" << dI << "][" << dJ << "] is set successfuly!\n";
+
+        // cout << "Enter first row values\n";
+        // for (int i = 0; i < rows; i++)
+        // {
+        //     cout << "col " << i << ": ";
+        //     do
+        //     {
+        //         cin >> debugValues;
+        //     } while (debugValues >= 0 && debugValues % 2 != 0);
+            
+        //     Grid[0][i].SetValue(debugValues);
+        // }
+    }
+
+    void ClearGrid()
+    {
+        cout << "ClearGrid()\n";
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                ClearTile(i,j);
+            }
+        }
+    }
+
     void MoveUpStep()
     {
         for (short i = 0; i < rows; i++)
@@ -449,7 +537,12 @@ class Game_2048
         case 'd':
             MoveRight();
             break;
-        
+        case '~':
+            ClearGrid();
+            break;
+        case '!':
+            SetDebugCase();
+            break;
         default:
             break;
         }
@@ -626,5 +719,6 @@ int main()
     Game_2048 A1;
     A1.Play();
 
+    system("pause");
     return 0;
 }
