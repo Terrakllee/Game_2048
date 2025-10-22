@@ -4,6 +4,8 @@ using namespace std;
 
 //Bug when going down or right
 
+static const bool DEBUG = false;
+
 class Game_2048
 {
     public:
@@ -46,7 +48,8 @@ class Game_2048
 
     void Play()
     {
-        cout << "Игра 2048\n";
+        cout << "Game 2048\n";
+        cout << "Made by Terrakllee\n";
 
         PrintGrid();
         SpawnStartingTiles();
@@ -83,10 +86,16 @@ class Game_2048
         {
             for (short j = 0; j < cols; j++)
             {
-                // cout << "[" << Grid[i][j].GetValue() << "]" << "\t\t";
-                cout << "(" << i << ";" << j << ") " << Grid[i][j].GetValue(); //Debug
-                cout << " m" << Grid[i][j].GetIsMoved() << " u" << Grid[i][j].GetIsStuckU(); //Debug
-                cout << " d" << Grid[i][j].GetIsStuckD() << " l" << Grid[i][j].GetIsStuckL() << " r" << Grid[i][j].GetIsStuckR() << "\t\t\t"; //Debug
+                if (!DEBUG)
+                {
+                    cout << "[" << Grid[i][j].GetValue() << "]" << "\t\t";
+                }
+                else
+                {
+                    cout << "(" << i << ";" << j << ") " << Grid[i][j].GetValue(); //Debug
+                    cout << " m" << Grid[i][j].GetIsMoved() << " u" << Grid[i][j].GetIsStuckU(); //Debug
+                    cout << " d" << Grid[i][j].GetIsStuckD() << " l" << Grid[i][j].GetIsStuckL() << " r" << Grid[i][j].GetIsStuckR() << "\t\t\t"; //Debug
+                }
             }
             cout << "\n";
         }
@@ -195,8 +204,8 @@ class Game_2048
     // void DebugMoveUp()
     // {
     //     short user;
-    //     cout << "\nВведите количество шагов вверх\n";
-    //     cout << "Ввод: ";
+    //     cout << "\nEnter how much to step up\n";
+    //     cout << "Enter: ";
     //     cin >> user;
     //     for (short i = 0; i < user; i++)
     //     {
@@ -422,8 +431,8 @@ class Game_2048
     void UserTurn()
     {
         char user;
-        cout << "\nВведите направление\n";
-        cout << "Ввод: ";
+        cout << "\nEnter the direction\n";
+        cout << "Enter: ";
         cin >> user;
 
         switch (user)
