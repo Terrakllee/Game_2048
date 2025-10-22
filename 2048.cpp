@@ -2,247 +2,443 @@
 
 using namespace std;
 
+//Bug when going down or right
+
 class Game_2048
 {
     public:
     class Tile
     {
-        public:
-        short value, row, col;
-        bool isUpEdge = false;
-        bool isDownEdge = false;
-        bool isLeftEdge = false;
-        bool isRightEdge = false;
-        bool isStuck = false;
-        bool moved = false;
+        //Variables
+        private:
+        short value;
+        bool isMoved;
+        bool isStuckU; //Up
+        bool isStuckD; //Down
+        bool isStuckL; //Left
+        bool isStuckR; //Right
 
         public:
 
-        short GetValue()
-        {
-            return value;
-        }
+        //Getters
+        short GetValue() {return value;}
+        bool GetIsMoved() {return isMoved;}
+        bool GetIsStuckU() {return isStuckU;}
+        bool GetIsStuckD() {return isStuckD;}
+        bool GetIsStuckL() {return isStuckL;}
+        bool GetIsStuckR() {return isStuckR;}
 
-        Tile() : value(0), row(0), col(0) {}
+        //Setters
+        void SetValue(short value) {this->value = value;}
+        void SetIsMoved(bool isMoved) {this->isMoved = isMoved;}
+        void SetIsStuckU(bool isStuckU) {this->isStuckU = isStuckU;}
+        void SetIsStuckD(bool isStuckD) {this->isStuckD = isStuckD;}
+        void SetIsStuckL(bool isStuckL) {this->isStuckL = isStuckL;}
+        void SetIsStuckR(bool isStuckR) {this->isStuckR = isStuckR;}
 
-        Tile(short value, short row, short col) 
-        : value(value), row(row), col(col) {}
+        //Constructors
+        Tile() : value(0), isMoved(false), isStuckU(false), isStuckD(false), isStuckL(false), isStuckR(false) {};
 
-        void PrintTile()
-        {
-            cout << "T(" << row << ", " << col << ") = " << value << " *" << isStuck << "\t\t"; // Debug
-            // cout << " [" << value << "] " << "\t";
+        Tile(int value, bool isMoved, bool isStuckU, bool isStuckD, bool isStuckL, bool isStuckR) :
+        value(value), isMoved(isMoved), isStuckU(isStuckU), isStuckD(isStuckD), isStuckL(isStuckL), isStuckR(isStuckR) {};
 
-        }
     };
 
-    Game_2048()
+    void Play()
     {
-        for (int i = 0; i < rows; i++)
+        cout << "Игра 2048\n";
+
+        PrintGrid();
+        SpawnStartingTiles();
+        PrintGrid();
+
+        do
         {
-            for (int j = 0; j < cols; j++)
+            UserTurn();
+            // MoveUp(); //Debug
+            CheckIfYouWin();
+            if (youWin == true)
             {
-                grid[i][j] = Tile(0, i, j);
-
-                if (i == 0)
-                {
-                    grid[i][j].isUpEdge = true;
-
-                }
-                if (i == 3)
-                {
-                    grid[i][j].isDownEdge = true;
-                }
-                if (j == 0)
-                {
-                    grid[i][j].isLeftEdge = true;
-
-                }
-                if (j == 3)
-                {
-                    grid[i][j].isRightEdge = true;
-                }
+                cout << "\nYou Win!\n";
+                break;
             }
-            
-        }
-        
+            CheckIfGameOver();
+            PrintGrid();
+            if (gameOver == true)
+            {
+                cout << "\nGame Over!\n";
+                break;
+            }
+            ClearMovementInfo();
+            SpawnRandomTile();
+            PrintGrid();
+
+        } while (!gameOver);
     }
 
     void PrintGrid()
     {
-        for (int i = 0; i < rows; ++i)
+        cout << "\n";
+        for (short i = 0; i < rows; i++)
         {
-            for (int j = 0; j < cols; ++j)
+            for (short j = 0; j < cols; j++)
             {
-                grid[i][j].PrintTile();
+                // cout << "[" << Grid[i][j].GetValue() << "]" << "\t\t";
+                cout << "(" << i << ";" << j << ") " << Grid[i][j].GetValue(); //Debug
+                cout << " m" << Grid[i][j].GetIsMoved() << " u" << Grid[i][j].GetIsStuckU(); //Debug
+                cout << " d" << Grid[i][j].GetIsStuckD() << " l" << Grid[i][j].GetIsStuckL() << " r" << Grid[i][j].GetIsStuckR() << "\t\t\t"; //Debug
             }
-            cout << "\n\n";
+            cout << "\n";
         }
         cout << "\n";
     }
 
-    void RandomTile()
+    void SpawnStartingTiles()
     {
+        SpawnRandomTile();
+        SpawnRandomTile();
+    }
+
+    void SpawnRandomTile()
+    {
+        short randomTileRow;
+        short randomTileCol;
+        short randomTileChance;
+        short randomTileValue;
+
         do
         {
-            rowRand = rand() % rows;
-            colRand = rand() % cols;
-        } while (grid[rowRand][colRand].value != 0);
+            randomTileRow = rand() % rows;
+            randomTileCol = rand() % cols;
+        } while (Grid[randomTileRow][randomTileCol].GetValue() != 0);
 
-        valueRandChance = rand() % (tileValue2SpawnChance+1);
+        randomTileChance = rand() % randomChanceOfSpawn_4;
 
-        if (valueRandChance == tileValue2SpawnChance)
+        if (randomTileChance < randomChanceOfSpawn_4 - 1) 
         {
-            valueRandom = value4;
+            randomTileValue = value2;
         }
         else
         {
-            valueRandom = value2;
+            randomTileValue = value4;
         }
-    
-        grid[rowRand][colRand].value = valueRandom;
+
+        Grid[randomTileRow][randomTileCol].SetValue(randomTileValue);
     }
 
-    void StartingTiles()
+    bool IsUpEdge(short i, short j)
     {
-        for (short i = 0; i < startingTiles; i++)
+        if (i == 0)
         {
-            RandomTile();
+            return true;
+        }
+        else
+        {
+            return false;
         }
         
     }
 
-    void CountTiles()
+    bool IsDownEdge(short i, short j)
     {
-        for (int i = 0; i < rows; i++)
+        if (i == rows-1)
         {
-            for (int j = 0; j < cols; j++)
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        
+    }
+
+    bool IsLeftEdge(short i, short j)
+    {
+        if (j == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        
+    }
+
+    bool IsRightEdge(short i, short j)
+    {
+        if (j == cols-1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        
+    }
+
+    void ClearMovementInfo()
+    {
+        for (short i = 0; i < rows; i++)
+        {
+            for (short j = 0; j < cols; j++)
             {
-                if (grid[i][j].value != 0)
+                if (Grid[i][j].GetIsMoved() == true)
                 {
-                    ++tilesCounter;
+                    Grid[i][j].SetIsMoved(false);
                 }
-                if (grid[i][j].isStuck == true)
-                {
-                    ++stuckTilesCounter;
-                }
-                if (grid[i][j].value > biggestTile)
-                {
-                    biggestTile = grid[i][j].value;
-                }
-                if (grid[i][j].value == 0)
-                {
-                    grid[i][j].isStuck = false;
-                }
-                
-                
-                
-                
             }
         }
     }
 
-    short GetBiggestTile()
+    // void DebugMoveUp()
+    // {
+    //     short user;
+    //     cout << "\nВведите количество шагов вверх\n";
+    //     cout << "Ввод: ";
+    //     cin >> user;
+    //     for (short i = 0; i < user; i++)
+    //     {
+    //         MoveUp();
+    //     }
+        
+    // }
+
+    void ClearTile(short i, short j)
     {
-        return biggestTile;
+        Grid[i][j].SetValue(0);
+        Grid[i][j].SetIsMoved(false);
+        Grid[i][j].SetIsStuckU(false);
+        Grid[i][j].SetIsStuckD(false);
+        Grid[i][j].SetIsStuckL(false);
+        Grid[i][j].SetIsStuckR(false);
     }
 
-    short GetStuckTilesCounter()
+    bool TileIsEmpty(short i, short j)
     {
-        return stuckTilesCounter;
+        if (Grid[i][j].GetValue() == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
-    void UserInput()
+    void MoveUpStep()
     {
-        cout << "WASD: ";
+        for (short i = 0; i < rows; i++)
+        {
+            for (short j = 0; j < cols; j++)
+            {
+                CountTiles();
+                CheckIfAllUpIsStuck();
+                if (!IsUpEdge(i, j) && !TileIsEmpty(i, j))
+                {
+                    if (Grid[i-1][j].GetValue() == Grid[i][j].GetValue() && Grid[i][j].GetIsMoved() == false)
+                    {
+                        Grid[i-1][j].SetValue(Grid[i-1][j].GetValue() * mult);
+                        Grid[i-1][j].SetIsMoved(true);
+                        if (IsUpEdge(i-1, j))
+                        {
+                            Grid[i-1][j].SetIsStuckU(true);
+                        }
+                        ClearTile(i, j);
+                        PrintGrid(); //Debug
+                    }
+                    else if (!IsUpEdge(i, j) && TileIsEmpty(i-1, j))
+                    {
+                        Grid[i-1][j].SetValue(Grid[i][j].GetValue());
+                        if (IsUpEdge(i-1, j))
+                        {
+                            Grid[i-1][j].SetIsStuckU(true);
+                        }
+                        ClearTile(i, j);
+                        PrintGrid(); //Debug
+                    }
+                    else
+                    {
+                        Grid[i][j].SetIsStuckU(true);
+                    }
+                }
+                else if (IsUpEdge(i, j) && Grid[i][j].GetValue() != 0)
+                {
+                    Grid[i][j].SetIsStuckU(true);
+                }
+            }
+        }
+    }
+
+    void MoveDownStep()
+    {
+        for (short i = 0; i < rows; i++)
+        {
+            for (short j = 0; j < cols; j++)
+            {
+                CountTiles();
+                CheckIfAllDownIsStuck();
+                if (!IsDownEdge(i, j) && !TileIsEmpty(i, j))
+                {
+                    if (Grid[i+1][j].GetValue() == Grid[i][j].GetValue() && Grid[i][j].GetIsMoved() == false)
+                    {
+                        Grid[i+1][j].SetValue(Grid[i+1][j].GetValue() * mult);
+                        Grid[i+1][j].SetIsMoved(true);
+                        if (IsDownEdge(i+1, j))
+                        {
+                            Grid[i+1][j].SetIsStuckD(true);
+                        }
+                        ClearTile(i, j);
+                        PrintGrid(); //Debug
+                    }
+                    else if (!IsDownEdge(i, j) && TileIsEmpty(i+1, j))
+                    {
+                        Grid[i+1][j].SetValue(Grid[i][j].GetValue());
+                        if (IsDownEdge(i+1, j))
+                        {
+                            Grid[i+1][j].SetIsStuckD(true);
+                        }
+                        ClearTile(i, j);
+                        PrintGrid(); //Debug
+                    }
+                    else
+                    {
+                        Grid[i][j].SetIsStuckD(true);
+                    }
+                }
+                else if (IsDownEdge(i, j) && Grid[i][j].GetValue() != 0)
+                {
+                    Grid[i][j].SetIsStuckD(true);
+                }
+            }
+        }
+    }
+
+    void MoveLeftStep()
+    {
+        for (short i = 0; i < rows; i++)
+        {
+            for (short j = 0; j < cols; j++)
+            {
+                CountTiles();
+                CheckIfAllLeftIsStuck();
+                if (!IsLeftEdge(i, j) && !TileIsEmpty(i, j))
+                {
+                    if (Grid[i][j-1].GetValue() == Grid[i][j].GetValue() && Grid[i][j].GetIsMoved() == false)
+                    {
+                        Grid[i][j-1].SetValue(Grid[i][j-1].GetValue() * mult);
+                        Grid[i][j-1].SetIsMoved(true);
+                        ClearTile(i, j);
+                        PrintGrid(); //Debug
+                    }
+                    else if (!IsLeftEdge(i, j) && TileIsEmpty(i, j-1))
+                    {
+                        Grid[i][j-1].SetValue(Grid[i][j].GetValue());
+                        ClearTile(i, j);
+                        PrintGrid(); //Debug
+                    }
+                    else
+                    {
+                        Grid[i][j].SetIsStuckL(true);
+                    }
+                }
+                else if (IsLeftEdge(i, j) && Grid[i][j].GetValue() != 0)
+                {
+                    Grid[i][j].SetIsStuckL(true);
+                }
+            }
+        }
+    }
+
+    void MoveRightStep()
+    {
+        for (short i = 0; i < rows; i++)
+        {
+            for (short j = 0; j < cols; j++)
+            {
+                CountTiles();
+                CheckIfAllRightIsStuck();
+                if (!IsRightEdge(i, j) && !TileIsEmpty(i, j))
+                {
+                    if (Grid[i][j+1].GetValue() == Grid[i][j].GetValue() && Grid[i][j].GetIsMoved() == false)
+                    {
+                        Grid[i][j+1].SetValue(Grid[i][j+1].GetValue() * mult);
+                        Grid[i][j+1].SetIsMoved(true);
+                        ClearTile(i, j);
+                        PrintGrid(); //Debug
+                    }
+                    else if (!IsRightEdge(i, j) && TileIsEmpty(i, j+1))
+                    {
+                        Grid[i][j+1].SetValue(Grid[i][j].GetValue());
+                        ClearTile(i, j);
+                        PrintGrid(); //Debug
+                    }
+                    else
+                    {
+                        Grid[i][j].SetIsStuckR(true);
+                    }
+                }
+                else if (IsRightEdge(i, j) && Grid[i][j].GetValue() != 0)
+                {
+                    Grid[i][j].SetIsStuckR(true);
+                }
+            }
+        }
+    }
+
+    void MoveUp()
+    {
+        do
+        {
+            MoveUpStep();
+        } while (tilesCount != tilesStuckUpCount);
+    }
+
+    void MoveDown()
+    {
+        do
+        {
+            MoveDownStep();
+        } while (tilesCount != tilesStuckDownCount);
+    }
+
+    void MoveLeft()
+    {
+        do
+        {
+            MoveLeftStep();
+        } while (tilesCount != tilesStuckLeftCount);
+    }
+
+    void MoveRight()
+    {
+        do
+        {
+            MoveRightStep();
+        } while (tilesCount != tilesStuckRightCount);
+    }
+
+    void UserTurn()
+    {
+        char user;
+        cout << "\nВведите направление\n";
+        cout << "Ввод: ";
         cin >> user;
-        cout << "\n";
-
 
         switch (user)
         {
         case 'w':
-            do
-            {
-                for (int i = 0; i < rows; i++)
-                {
-                    for (int j = 0; j < cols; j++)
-                    {
-                        tilesCounter = 0;
-                        stuckTilesCounter = 0;
-                        CountTiles();
-                        tilesCounter = 0;
-                        stuckTilesCounter = 0;
-
-                        if (grid[i][j].row != 0 && grid[i][j].value != 0 && grid[i-1][j].value == 0)
-                        {
-                            grid[i-1][j].value = grid[i][j].value;
-                            grid[i][j].value = 0;
-                            grid[i][j].isStuck = false;
-                            grid[i-1][j].isStuck = false;
-                        }
-                        else if (grid[i][j].row != 0 && grid[i][j].value != 0 && grid[i-1][j].value != 0)
-                        {
-                            if (grid[i-1][j].value == grid[i][j].value)
-                            {
-                                grid[i-1][j].value *= 2;
-                                grid[i][j].value = 0;
-                                grid[i][j].isStuck = false;
-                                grid[i-1][j].isStuck = false;
-                                grid[i-1][j].moved = true;
-                            }
-                            else if (grid[i-1][j].value != grid[i][j].value)
-                            {
-                                grid[i][j].isStuck = true;
-                            }
-                            
-                        }
-                        if (grid[i][j].isUpEdge == true && grid[i][j].value != 0)
-                        {
-                            grid[i][j].isStuck = true;
-                        }
-                        
-
-                        // if (grid[i][j].isStuck && grid[i-1][j].value == grid[i][j].value)
-                        // {
-                        //     grid[i][j].isStuck = false;
-                        // }
-
-                        // if (grid[i-1][j].isStuck && grid[i-1][j].value == grid[i][j].value)
-                        // {
-                        //     grid[i][j].isStuck = false;
-                        // }
-                        
-                        tilesCounter = 0;
-                        stuckTilesCounter = 0;
-                        CountTiles();
-                        if (tilesCounter == stuckTilesCounter && tilesCounter != 0 && stuckTilesCounter != 0)
-                        {
-                            break;
-                        }
-
-                        if (stuckTilesCounter == rows * cols)
-                        {
-                            break;
-                        }
-                        
-                        
-                        tilesCounter = 0;
-                        stuckTilesCounter = 0;
-                    }
-                    if (stuckTilesCounter == rows * cols)
-                    {
-                        break;
-                    }
-                }
-                
-                if (stuckTilesCounter == rows * cols)
-                {
-                    break;
-                }
-
-            } while (!(tilesCounter == stuckTilesCounter && tilesCounter != 0 && stuckTilesCounter != 0));
-
+            MoveUp();
+            break;
+        case 'a':
+            MoveLeft();
+            break;
+        case 's':
+            MoveDown();
+            break;
+        case 'd':
+            MoveRight();
             break;
         
         default:
@@ -250,67 +446,176 @@ class Game_2048
         }
     }
 
-    public:
-    static const short rows = 4;
-    static const short cols = 4;
-    static const short startingTiles = 2;
-    static const short tileValue2SpawnChance = 9; // 90% Chance of getting tile with value 2
-    static const short value2 = 2;
-    static const short value4 = 4;
+    void CheckIfAllUpIsStuck()
+    {
+        tilesStuckUpCount = 0;
+        for (short i = 0; i < rows; i++)
+        {
+            for (short j = 0; j < cols; j++)
+            {
+                if (Grid[i][j].GetIsStuckU())
+                {
+                    tilesStuckUpCount++;
+                }
+                
+            }
+            
+        }
+    }
+
+    void CheckIfAllDownIsStuck()
+    {
+        tilesStuckDownCount = 0;
+        for (short i = 0; i < rows; i++)
+        {
+            for (short j = 0; j < cols; j++)
+            {
+                if (Grid[i][j].GetIsStuckD())
+                {
+                    tilesStuckDownCount++;
+                }
+                
+            }
+            
+        }
+    }
+
+    void CheckIfAllLeftIsStuck()
+    {
+        tilesStuckLeftCount = 0;
+        for (short i = 0; i < rows; i++)
+        {
+            for (short j = 0; j < cols; j++)
+            {
+                if (Grid[i][j].GetIsStuckL())
+                {
+                    tilesStuckLeftCount++;
+                }
+                
+            }
+            
+        }
+    }
+
+    void CheckIfAllRightIsStuck()
+    {
+        tilesStuckRightCount = 0;
+        for (short i = 0; i < rows; i++)
+        {
+            for (short j = 0; j < cols; j++)
+            {
+                if (Grid[i][j].GetIsStuckR())
+                {
+                    tilesStuckRightCount++;
+                }
+                
+            }
+            
+        }
+    }
+
+    void CountTiles()
+    {
+        tilesCount = 0;
+        for (short i = 0; i < rows; i++)
+        {
+            for (short j = 0; j < cols; j++)
+            {
+                if (Grid[i][j].GetValue() != 0)
+                {
+                    tilesCount++;
+                }
+                
+            }
+            
+        }  
+    }
+
+    void CheckIfGameOver()
+    {
+        if (tilesStuckUpCount == allTilesCount)
+        {
+            gameOver = true;
+        }
+        else if (tilesStuckDownCount == allTilesCount)
+        {
+            gameOver = true;
+        }
+        else if (tilesStuckLeftCount == allTilesCount)
+        {
+            gameOver = true;
+        }
+        else if (tilesStuckRightCount == allTilesCount)
+        {
+            gameOver = true;
+        }
+    }
+
+    void CheckIfYouWin()
+    {
+        for (short i = 0; i < rows; i++)
+        {
+            for (short j = 0; j < cols; j++)
+            {
+                if (Grid[i][j].GetValue() == wininigTile)
+                {
+                    youWin = true;
+                }
+            }
+            
+        }
+        
+    }
+
+    Game_2048()
+    {
+        Grid = new Tile*[rows];
+        for (short i = 0; i < rows; i++)
+        {
+            Grid[i] = new Tile[cols];
+        }
+    }
+
+    ~Game_2048()
+    {
+        for (short i = 0; i < rows; i++)
+        {
+            delete[] Grid[i];
+        }
+        delete[] Grid;
+        Grid = nullptr;
+    }
+
+
 
     private:
-    short valueRandom;
-    short valueRandChance;
-    short rowRand, colRand;
-    char user;
-    short tilesCounter = 0;
-    short stuckTilesCounter = 0;
-    short biggestTile = 0;
-
-    Tile grid[rows][cols];
+    static const short rows = 4;
+    static const short cols = 4;
+    static const short allTilesCount = 16;
+    Tile **Grid;
+    static const short randomChanceOfSpawn_4 = 10;
+    static const short value2 = 2;
+    static const short value4 = 4;
+    short tilesCount;
+    short tilesStuckUpCount;
+    short tilesStuckDownCount;
+    short tilesStuckLeftCount;
+    short tilesStuckRightCount;
+    bool gameOver = false;
+    bool youWin = false;
+    static const short mult = 2;
+    static const short wininigTile = 2048;
 
 
 };
 
+
+
+
 int main()
 {
     Game_2048 A1;
+    A1.Play();
 
-    A1.PrintGrid();
-        
-    A1.StartingTiles();
-
-    A1.PrintGrid();
-
-    do
-    {
-        cout << "\nStuck: " << A1.GetStuckTilesCounter() << "\n";
-
-        A1.UserInput();
-
-        cout << "\nStuck: " << A1.GetStuckTilesCounter() << "\n";
-
-        A1.PrintGrid();
-
-        if (A1.GetStuckTilesCounter() == A1.rows * A1.cols)
-        {
-            break;
-        }
-        
-        A1.RandomTile();
-
-        cout << "_____________________________vvv After Random Tile vvv_________________________________\n\n";
-
-        A1.PrintGrid();
-
-        
-
-    } while (A1.GetBiggestTile() != 2048 || A1.GetStuckTilesCounter() != A1.rows * A1.cols);
-    
-    
-    
- 
-
-
-    
+    return 0;
 }
