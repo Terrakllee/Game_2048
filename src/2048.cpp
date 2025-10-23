@@ -410,7 +410,7 @@ class Game_2048
         Grid[3][3].SetValue(4);
     }
 
-    void LoaddebugCases()
+    void LoadDebugCases()
     {
         int loadCase;
         cout << "debug case loader\n";
@@ -518,7 +518,7 @@ class Game_2048
                 debugCaseCreatorAll();
                 break;
             case 'g':
-                LoaddebugCases();
+                LoadDebugCases();
                 break;
             case 'n':
                 disableRandomTiles == false ? disableRandomTiles = true : disableRandomTiles = false;
@@ -915,7 +915,7 @@ class Game_2048
             break;
         case '#':
             if (debug)
-                LoaddebugCases();
+                LoadDebugCases();
             badMove = true;
             break;
         case '%':
