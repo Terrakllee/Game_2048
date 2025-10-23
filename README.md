@@ -6,6 +6,7 @@ https://github.com/Terrakllee
 EN
 
 //About
+
 This is a game 2048 in Windows CMD interface using programming language C++
 
 When I made my first console game "MemeTic-Tac-Toe", I thought what should I do next.
@@ -21,19 +22,13 @@ Is that there is a cool debug menu, where you can place values at specific coord
 Or you can load some debug cases, or stop random tiles to spawn.
 
 //Useful info
+
 To enable/disable debug, press % key
 To exit current game, press 0, then n
 To spawn debug case, press # (debug mode needs to be activated)
 To show debug menu, press @
 
 //How to launch
+
 Double left click on file Game_2048.exe
-
-
-
-
-
-
-
-
 
