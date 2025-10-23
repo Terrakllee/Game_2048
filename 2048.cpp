@@ -948,7 +948,7 @@ class Game_2048
         {
             for (short j = 0; j < COLS; j++)
             {
-                if (Grid[i][j].GetValue() != 0 && (IsUpEdge(i) || !TileIsEmpty(i-1, j) && Grid[i-1][j].GetValue() != Grid[i][j].GetValue() || Grid[i-1][j].GetIsMoved() || Grid[i][j].GetIsMoved()))
+                if (Grid[i][j].GetValue() != 0 && (IsUpEdge(i) || (!TileIsEmpty(i-1, j) && Grid[i-1][j].GetValue() != Grid[i][j].GetValue()) || Grid[i-1][j].GetIsMoved() || Grid[i][j].GetIsMoved()))
                 {
                     Grid[i][j].SetIsStuckU(true);
                     tilesStuckUpCount++;
@@ -968,7 +968,7 @@ class Game_2048
         {
             for (short j = 0; j < COLS; j++)
             {
-                if (Grid[i][j].GetValue() != 0 && (IsDownEdge(i) || !TileIsEmpty(i+1, j) && Grid[i+1][j].GetValue() != Grid[i][j].GetValue() || Grid[i+1][j].GetIsMoved() || Grid[i][j].GetIsMoved()))
+                if (Grid[i][j].GetValue() != 0 && (IsDownEdge(i) || (!TileIsEmpty(i+1, j) && Grid[i+1][j].GetValue() != Grid[i][j].GetValue()) || Grid[i+1][j].GetIsMoved() || Grid[i][j].GetIsMoved()))
                 {
                     Grid[i][j].SetIsStuckD(true);
                     tilesStuckDownCount++;
@@ -988,7 +988,7 @@ class Game_2048
         {
             for (short j = 0; j < COLS; j++)
             {
-                if (Grid[i][j].GetValue() != 0 && (IsLeftEdge(j) || !TileIsEmpty(i, j-1) && Grid[i][j-1].GetValue() != Grid[i][j].GetValue() || Grid[i][j-1].GetIsMoved() || Grid[i][j].GetIsMoved()))
+                if (Grid[i][j].GetValue() != 0 && (IsLeftEdge(j) || (!TileIsEmpty(i, j-1) && Grid[i][j-1].GetValue() != Grid[i][j].GetValue()) || Grid[i][j-1].GetIsMoved() || Grid[i][j].GetIsMoved()))
                 {
                     Grid[i][j].SetIsStuckL(true);
                     tilesStuckLeftCount++;
@@ -1008,7 +1008,7 @@ class Game_2048
         {
             for (short j = 0; j < COLS; j++)
             {
-                if (Grid[i][j].GetValue() != 0 && (IsRightEdge(j) || !TileIsEmpty(i, j+1) && Grid[i][j+1].GetValue() != Grid[i][j].GetValue() || Grid[i][j+1].GetIsMoved() || Grid[i][j].GetIsMoved()))
+                if (Grid[i][j].GetValue() != 0 && (IsRightEdge(j) || (!TileIsEmpty(i, j+1) && Grid[i][j+1].GetValue() != Grid[i][j].GetValue()) || Grid[i][j+1].GetIsMoved() || Grid[i][j].GetIsMoved()))
                 {
                     Grid[i][j].SetIsStuckR(true);
                     tilesStuckRightCount++;
