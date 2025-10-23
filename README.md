@@ -32,3 +32,18 @@ To show debug menu, press @
 
 Double left click on file Game_2048.exe
 
+//How to play
+
+Use w,a,s,d keys to move all tiles in a specific directions
+w - up, a - left, s - down, d - right
+
+//How to win
+
+The goal of the game 2048 is to make one tile at value 2048.
+You can do this by adding tile values, when merging them.
+For example you have 2 and 2, you merge them and you get 4,
+Then you connect 4 and 4, and you get 8, and so on until 2048.
+
+Good luck and have fun!
+
+
