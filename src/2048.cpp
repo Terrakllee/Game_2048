@@ -74,16 +74,16 @@ class Game_2048
             if (youWin == true)
             {
                 PrintGrid();
-                cout << "\nYou Win!\n";
-                cout << "Your score is " << score << "\n";
+                cout << "\nТы выиграл(а)!\n";
+                cout << "Ваш счет " << score << "\n";
                 break;
             }
             CheckIfGameOver();
             if (gameOver == true)
             {
                 PrintGrid();
-                cout << "\nGame Over!\n";
-                cout << "Your score is " << score << "\n";
+                cout << "\nИгра окончена!\n";
+                cout << "Ваш счет " << score << "\n";
                 break;
             }
             ClearMovementInfo();
@@ -491,16 +491,16 @@ class Game_2048
         char debugMenuChoice;
         do
         {
-            cout << "debug Menu\n";
-            cout << "Exit - 'e'\n";
-            cout << "Set value at specific index - 'i'\n";
-            cout << "Set values in first row - 'f'\n";
-            cout << "Set all tile values - 'a'\n";
-            cout << "Load debug cases - 'g'\n";
-            cout << "Disable tile spawn - 'n'\n";
-            cout << "Print grid - 'p'\n";
-            cout << "Clear grid - 'c'\n";
-            cout << "Enter: ";
+            cout << "Дебаг меню\n";
+            cout << "Выйти - 'e'\n";
+            cout << "Задать значения на определенном индексе - 'i'\n";
+            cout << "Задать значения в первом ряду - 'f'\n";
+            cout << "Задать значения всем ячейкам - 'a'\n";
+            cout << "Загрузить определенный дебаг случай - 'g'\n";
+            cout << "Отключить появление ячеек - 'n'\n";
+            cout << "Вывести сетку - 'p'\n";
+            cout << "Очистить сетку - 'c'\n";
+            cout << "Ввод: ";
             cin >> debugMenuChoice;
 
             switch (debugMenuChoice)
@@ -530,7 +530,7 @@ class Game_2048
                 ClearGrid();
                 break;
             default:
-                cout << "No such option!\n";
+                cout << "Нет такого варианта!\n";
                 break;
             }
         } while (!debugExit);
@@ -540,12 +540,12 @@ class Game_2048
     {
         cout << "debugCaseCreatorAll()\n";
         int debugValues;
-        cout << "If you want to skip this row enter - 9 or -1 to skip all ROWS\n";
+        cout << "Если вы хотите пропустить этот ряд, введите - 9 или -1 чтобы пропустить все ряды\n";
         for (int i = 0; i < ROWS; i++)
         {
             for (int j = 0; j < COLS; j++)
             {
-                cout << "[" << i << "][" << j << "] val = ";
+                cout << "[" << i << "][" << j << "] значение = ";
                 do
                 {
                     cin >> debugValues;
@@ -576,7 +576,7 @@ class Game_2048
                 if (debugValues != 9 && debugValues != -1)
                 {
                     Grid[i][j].SetValue(debugValues);
-                    cout << "Value " << debugValues << " at [" << i << "][" << j << "] is set successfuly!\n";
+                    cout << "Значение " << debugValues << " на позиции [" << i << "][" << j << "] задано успешно!\n";
                 }
             }
         }
@@ -586,7 +586,7 @@ class Game_2048
     {
         cout << "debugCaseCreatorRow()\n";
         int debugValues;
-        cout << "Enter first row values\n";
+        cout << "Введите значения первого ряда\n";
         for (int i = 0; i < ROWS; i++)
         {
             cout << "col " << i << ": ";
@@ -595,7 +595,7 @@ class Game_2048
                 cin >> debugValues;
             } while (debugValues >= 0 && debugValues % 2 != 0);
             Grid[0][i].SetValue(debugValues);
-            cout << "Value " << debugValues << " at [" << 0 << "][" << i << "] is set successfuly!\n";
+            cout << "Значение " << debugValues << " на позиции [" << 0 << "][" << i << "] задано успешно!\n";
         }
     }
 
@@ -605,8 +605,8 @@ class Game_2048
         int debugValues;
         int debugIndex;
         int dI, dJ;
-        cout << "Enter indexes to edit tile value (12 = [1][2], 01 = [0][1])\n";
-        cout << "Enter: ";
+        cout << "Введите индексы для редактирования значения ячейки (12 = [1][2], 01 = [0][1])\n";
+        cout << "Ввод: ";
 
         do
         {
@@ -615,7 +615,7 @@ class Game_2048
             dJ = (debugIndex % 10);
         } while (dI > ROWS && dJ > COLS && dI < 0 && dJ < 0);
 
-        cout << "Enter Value: ";
+        cout << "Введите значение: ";
         do
         {
             cin >> debugValues;
@@ -623,7 +623,7 @@ class Game_2048
 
         Grid[dI][dJ].SetValue(debugValues);
 
-        cout << "Value " << debugValues << " at [" << dI << "][" << dJ << "] is set successfuly!\n";
+        cout << "Значение " << debugValues << " на позиции [" << dI << "][" << dJ << "] задано успешно!\n";
     }
 
     void ClearGrid()
@@ -845,9 +845,9 @@ class Game_2048
     {
         CountTiles();
         char user;
-        cout << "Your current score is " << score << "\n";
-        cout << "Enter the direction\n";
-        cout << "Enter: ";
+        cout << "Ваш текущий счет " << score << "\n";
+        cout << "Введите направление\n";
+        cout << "Ввод: ";
         cin >> user;
 
         switch (user)
@@ -922,12 +922,12 @@ class Game_2048
             if (!debug)
             {
                 debug = true;
-                cout << "debug mode enabled!\n";
+                cout << "debug mode включен!\n";
             }
             else
             {
                 debug = false;
-                cout << "debug mode disabled!\n";
+                cout << "debug mode отключен!\n";
             }
             badMove = true;
             break;
@@ -935,7 +935,7 @@ class Game_2048
             gameOver = true;
             break;
         default:
-            cout << "No such move! (use wasd)\n";
+            cout << "Нет такого хода! (используйте wasd)\n";
             badMove = true;
             break;
         }
@@ -1136,6 +1136,8 @@ class Game_2048
 
 int main()
 {
+    setlocale(LC_ALL, "ru_RU");
+
     Game_2048 A1;
     A1.MsgGreetings();
 
@@ -1144,14 +1146,14 @@ int main()
     do
     {
         A1.Play();
-        cout << "Do you want to play again?\n";
-        cout << "Enter yes or no (y/n)\n";
-        cout << "Enter: ";
+        cout << "Вы хотите начать новую игру?\n";
+        cout << "Введите да, или нет (y/n)\n";
+        cout << "Ввод: ";
         cin >> exit;
         A1.ResetGame();
     } while (exit != 'n');
 
-    cout << "Exiting...\n";
+    cout << "Выходим...\n";
     system("pause");
     return 0;
 }

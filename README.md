@@ -3,47 +3,47 @@ Game_2048
 Made by Terrakllee
 https://github.com/Terrakllee
 
-EN
+RU
 
-//About
+//Про игру
 
-This is a game 2048 in Windows CMD interface using programming language C++
+Это игра 2048 в Windows CMD интерфейсе с использованием языка программирования C++
 
-When I made my first console game "MemeTic-Tac-Toe", I thought what should I do next.  
-And my friend told me that he was creating 2048 in python for his exam (he passed the exam),  
-So I thought why not to create it in C++, and I did it, from scratch!  
-Only 1 library was used - iostream
+Когда я создал свою первую консольную игру "MemeTic-Tac-Toe", я подумал, что мне следует сделать следующим.  
+Примерно в то же время, мой друг сказал, что тот создает игру 2048 на python для его экзамена (он сдал экзамен),  
+Так что я подумал, а почему бы не создать 2048 на C++, что по итогу и сделал, с нуля!  
+Только 1 библиотека была использована - iostream
 
-My friend's github if you interested
+Github моего друга, если интересно  
 https://github.com/k4ktu
 
-One interesting thing about this 2048 game, and maybe it makes it little more special than other,  
-Is that there is a cool debug menu, where you can place values at specific coordinates of 2048 grid  
-Or you can load some debug cases, or stop random tiles to spawn.  
+Одна интересная фишка про конкретно эту игру 2048, и возможно то что делает ее немного более особенной чем другие проекты,  
+Это то что тут есть прикольное дебаг меню, где ты можешь поместить собственное значение на конкретные координаты сетки 2048,  
+Или ты можешь загрузить некоторые дебаг случаи, или остановить появление случайных ячеек.
 
-//Useful info
+//Полезная информация
 
-To enable/disable debug, press % key  
-To exit current game, press 0, then n  
-To spawn debug case, press # (debug mode needs to be activated)  
-To show debug menu, press @  
+Чтобы включить/выключить дебаг режим, нажмите % key  
+Чтобы выйти из текущей игры, нажмите 0 и затем n  
+Чтобы загрузить дебаг случай, нажмите # (нужен дебаг режим)  
+Чтобы показать дебаг мен, нажмите @  
 
-//How to launch
+//Как запустить
 
-Double left click on file Game_2048.exe
+Два раза кликните левой кнопкой мыши по файлу Game_2048.exe
 
-//How to play
+//Как играть
 
-Use w,a,s,d keys to move all tiles in a specific directions  
-w - up, a - left, s - down, d - right
+Используйте w,a,s,d клавиши чтобы двигать все ячейки в определенном направлении  
+w - вверх, a - влево, s - вправо, d - вниз
 
-//How to win
+//Как выиграть
 
-The goal of the game 2048 is to make one tile at value 2048.  
-You can do this by adding tile values, when merging them.  
-For example you have 2 and 2, you merge them and you get 4,  
-Then you connect 4 and 4, and you get 8, and so on until 2048.  
+Цель игры 2048, это чтобы одна любая ячейка, получила значение 2048.  
+Ты можешь сделать это при слиянии двух других ячеек.  
+Например у тебя есть 2 и 2, ты соединяешь их и получаешь 4,  
+Потом ты соединяешь 4 и 4, получаешь 8, и так далее, пока не будет 2048
 
-Good luck and have fun!
+Удачи и приятной игры!
 
 
