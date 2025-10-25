@@ -1,4 +1,7 @@
 #include <iostream>
+#ifdef _WIN32
+    #include <windows.h>
+#endif
 
 using namespace std;
 
@@ -1136,7 +1139,12 @@ class Game_2048
 
 int main()
 {
-    setlocale(LC_ALL, "ru_RU");
+    setlocale(LC_ALL, "ru_RU.UTF8");
+
+#ifdef _WIN32
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
+#endif
 
     Game_2048 A1;
     A1.MsgGreetings();
@@ -1154,6 +1162,5 @@ int main()
     } while (exit != 'n');
 
     cout << "Выходим...\n";
-    system("pause");
     return 0;
 }
