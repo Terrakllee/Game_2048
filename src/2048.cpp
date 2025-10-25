@@ -1152,6 +1152,5 @@ int main()
     } while (exit != 'n');
 
     cout << "Exiting...\n";
-    system("pause");
     return 0;
 }
